@@ -13,7 +13,7 @@ import streamlit_authenticator as stauth
 
 # Vos modules perso
 from data_cleaner import load_and_clean_csv, update_historical_data
-from gdrive_backup import get_drive_service, restore_user_data
+from gdrive_backup import get_drive_service_from_secrets, restore_user_data
 from utils_visuals import (
     plot_equity_curve,
     plot_drawdown_curve,
@@ -111,8 +111,7 @@ data_file = os.path.join(user_data_dir, "trades_historique.csv")
 journal_file = os.path.join(user_data_dir, "journal_notes.json")
 
 try:
-    json_key_path = "dashboarding-tn8-7a67de160a56.json"
-    drive_service = get_drive_service(json_key_path)
+    drive_service = get_drive_service_from_secrets()
     restore_user_data(
         drive_service=drive_service,
         local_data_dir=user_data_dir,
@@ -528,20 +527,18 @@ if not df_notes.empty:
 else:
     st.info("Aucune note à afficher.")
 
-from gdrive_backup import get_drive_service, backup_user_data
+from gdrive_backup import get_drive_service_from_secrets, backup_user_data
 
 st.markdown("---")
 st.subheader("☁️ Sauvegarde Google Drive")
 
 if st.button("🔁 Sauvegarder mes données sur Drive", use_container_width=True):
     try:
-        json_key_path = "dashboarding-tn8-7a67de160a56.json"  
-        drive_service = get_drive_service(json_key_path)
+        drive_service = get_drive_service_from_secrets()
         backup_user_data(
             drive_service=drive_service,
             local_data_dir=user_data_dir,
             backup_folder_name="Streamlit_Backup",
-            json_key_path=json_key_path,
             username=username
         )
         st.success("📦 Données sauvegardées sur Google Drive avec succès !")
