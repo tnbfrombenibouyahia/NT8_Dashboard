@@ -1,0 +1,14 @@
+streamlit==1.44.1
+streamlit-authenticator==0.2.2
+google-api-python-client
+google-auth
+google-auth-httplib2
+google-auth-oauthlib
+pandas
+numpy
+plotly
+yfinance
+calplot
+bcrypt
+pyyaml
+
