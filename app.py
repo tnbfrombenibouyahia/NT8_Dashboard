@@ -118,9 +118,13 @@ try:
         backup_folder_name="Streamlit_Backup",
         username=username
     )
+    
     print("✅ Restauration automatique terminée.")
 except Exception as e:
     print(f"❌ Erreur de restauration automatique : {e}")
+
+st.warning("🔍 Présence du fichier après restauration ?")
+st.text(f"trades_historique.csv présent ? {os.path.exists(data_file)}")
 # ─────────────────────────────────────────────────────────────────────────
 # Définition des chemins de fichiers pour CET utilisateur
 # ─────────────────────────────────────────────────────────────────────────
