@@ -13,7 +13,7 @@ import streamlit_authenticator as stauth
 
 # Vos modules perso
 from data_cleaner import load_and_clean_csv, update_historical_data
-from gdrive_backup import get_drive_service_from_secrets, restore_user_data
+from gdrive_backup import get_drive_service_from_secrets, restore_user_data, backup_user_data
 from utils_visuals import (
     plot_equity_curve,
     plot_drawdown_curve,

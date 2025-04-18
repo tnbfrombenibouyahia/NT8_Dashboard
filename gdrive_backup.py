@@ -5,6 +5,8 @@ import streamlit as st
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaIoBaseDownload
 from google.oauth2 import service_account
+import mimetypes
+from googleapiclient.http import MediaFileUpload
 
 def get_drive_service_from_secrets():
     service_account_info = json.loads(st.secrets["gdrive_key"])
@@ -65,3 +67,45 @@ def restore_user_data(drive_service, local_data_dir, backup_folder_name, usernam
                     done = False
                     while not done:
                         status, done = downloader.next_chunk()
+
+def backup_user_data(drive_service, local_data_dir, backup_folder_name, username):
+    def create_folder_if_not_exists(name, parent_id=None):
+        query = f"name='{name}' and mimeType='application/vnd.google-apps.folder' and trashed=false"
+        if parent_id:
+            query += f" and '{parent_id}' in parents"
+        results = drive_service.files().list(q=query, fields="files(id)").execute()
+        files = results.get("files", [])
+        if files:
+            return files[0]['id']
+        metadata = {
+            "name": name,
+            "mimeType": "application/vnd.google-apps.folder"
+        }
+        if parent_id:
+            metadata["parents"] = [parent_id]
+        folder = drive_service.files().create(body=metadata, fields="id").execute()
+        return folder["id"]
+
+    backup_folder_id = create_folder_if_not_exists(backup_folder_name)
+    user_folder_id = create_folder_if_not_exists(username, backup_folder_id)
+
+    for root, _, files in os.walk(local_data_dir):
+        rel_path = os.path.relpath(root, local_data_dir)
+        parent_id = user_folder_id
+        if rel_path != ".":
+            parent_id = create_folder_if_not_exists(rel_path, user_folder_id)
+
+        for file_name in files:
+            file_path = os.path.join(root, file_name)
+            mime_type, _ = mimetypes.guess_type(file_path)
+            metadata = {
+                "name": file_name,
+                "parents": [parent_id]
+            }
+            media = MediaFileUpload(file_path, mimetype=mime_type)
+            # Supprime les anciens fichiers portant le même nom
+            q = f"name='{file_name}' and '{parent_id}' in parents and trashed=false"
+            existing = drive_service.files().list(q=q, fields="files(id)").execute().get("files", [])
+            for f in existing:
+                drive_service.files().delete(fileId=f['id']).execute()
+            drive_service.files().create(body=metadata, media_body=media, fields="id").execute()
