@@ -36,6 +36,15 @@ def parse_datetime(value, fmt):
         except:
             return pd.NaT
 
+def detect_format(df):
+    sample_value = str(df.iloc[0].get("Entry time", ""))
+    if 'AM' in sample_value or 'PM' in sample_value:
+        return 'us'
+    price_val = str(df.iloc[0].get("Entry price", ""))
+    if ',' in price_val and '.' not in price_val:
+        return 'fr'
+    return 'us'
+
 def load_and_clean_csv(file):
     try:
         df = pd.read_csv(file, sep=None, engine='python')
