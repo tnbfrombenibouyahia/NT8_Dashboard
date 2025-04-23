@@ -1,15 +1,39 @@
 import pandas as pd
 import numpy as np
 import os
+import locale
+from dateutil import parser
 
-def parse_money(val):
+def parse_money(val, fr_format=False):
     if pd.isna(val):
         return np.nan
-    val = str(val).replace('(', '-').replace(')', '').replace('$', '').replace(',', '').strip()
+    val = str(val).strip()
+    if fr_format:
+        val = val.replace("\xa0", "").replace(" €", "").replace(",", ".")
+    else:
+        val = val.replace('(', '-').replace(')', '').replace('$', '').replace(',', '')
     try:
         return float(val)
     except:
         return np.nan
+
+def detect_format(df):
+    sample_value = str(df.iloc[0].get("Entry time", ""))
+    if 'AM' in sample_value or 'PM' in sample_value:
+        return 'us'
+    # If comma in numerical fields
+    price_val = str(df.iloc[0].get("Entry price", ""))
+    if ',' in price_val and '.' not in price_val:
+        return 'fr'
+    return 'us'
+
+def parse_datetime(value, fmt):
+    try:
+        if fmt == 'fr':
+            return pd.to_datetime(value, format="%d/%m/%Y %H:%M:%S", errors="coerce")
+        return pd.to_datetime(value, errors="coerce")
+    except:
+        return pd.NaT
 
 def load_and_clean_csv(file):
     try:
@@ -19,20 +43,26 @@ def load_and_clean_csv(file):
         st.error(f"❌ Erreur lors de la lecture du fichier CSV : {e}")
         return pd.DataFrame()
 
-    # Suppression de colonnes inutiles
+    # Détection du format (us ou fr)
+    data_format = detect_format(df)
+    fr_format = (data_format == 'fr')
+
+    # Nettoyage colonnes inutiles
     df = df.drop(columns=["Unnamed: 19"], errors="ignore")
 
-    # Conversion des colonnes monétaires
+    # Conversion des montants
     monetary_columns = ["Profit", "Cum. net profit", "MAE", "MFE", "ETD", "Commission"]
     for col in monetary_columns:
         if col in df.columns:
-            df[col] = df[col].apply(parse_money)
+            df[col] = df[col].apply(lambda x: parse_money(x, fr_format=fr_format))
 
     # Conversion des dates
-    df["Entry time"] = pd.to_datetime(df["Entry time"], errors="coerce")
-    df["Exit time"] = pd.to_datetime(df["Exit time"], errors="coerce")
+    if "Entry time" in df.columns:
+        df["Entry time"] = df["Entry time"].apply(lambda x: parse_datetime(x, fmt=data_format))
+    if "Exit time" in df.columns:
+        df["Exit time"] = df["Exit time"].apply(lambda x: parse_datetime(x, fmt=data_format))
 
-    # ID unique pour éviter les doublons
+    # ID unique
     if "Trade number" in df.columns:
         df["trade_id"] = df["Trade number"].astype(str) + "_" + df["Entry time"].astype(str)
     else:
