@@ -550,8 +550,6 @@ if st.button("🔁 Sauvegarder mes données sur Drive", use_container_width=True
 
 if authentication_status:
 
-    # ⬇️ Le reste de ton code principal (filtres, affichages, visualisations, etc.)
-
     st.markdown("---")
     st.subheader("🧨 Réinitialisation de Google Drive")
     

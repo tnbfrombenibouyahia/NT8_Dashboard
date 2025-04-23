@@ -1,12 +1,13 @@
 from googleapiclient.discovery import build
 from google.oauth2 import service_account
 import streamlit as st
+import json
 
 def reset_all_drive_files():
     st.warning("⚠️ Suppression en cours de tous les fichiers du Drive...")
 
     SCOPES = ['https://www.googleapis.com/auth/drive']
-    SERVICE_ACCOUNT_INFO = st.secrets["gdrive_service_account"]
+    SERVICE_ACCOUNT_INFO = json.loads(st.secrets["gdrive_key"])
 
     creds = service_account.Credentials.from_service_account_info(
         SERVICE_ACCOUNT_INFO, scopes=SCOPES)
@@ -16,6 +17,7 @@ def reset_all_drive_files():
     # Lister tous les fichiers
     results = service.files().list(pageSize=1000, fields="files(id, name)").execute()
     items = results.get('files', [])
+    st.info(f"🔎 Fichiers détectés : {len(items)}")
 
     if not items:
         st.success("✅ Aucun fichier à supprimer, Drive déjà vide.")
