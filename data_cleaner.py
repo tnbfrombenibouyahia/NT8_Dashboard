@@ -30,16 +30,26 @@ def detect_format(df):
         return 'fr'
     return 'us'
 
-def parse_datetime(value, fmt):
+def parse_money(val, fr_format=False):
+    if pd.isna(val):
+        return np.nan
+    val = str(val).strip()
+
+    # Format FR
+    if fr_format:
+        val = val.replace("\xa0", "")  # espace insécable
+        val = val.replace(" €", "").replace("€", "").replace(" $", "").replace("$", "")
+        val = val.replace(",", ".")  # virgule décimale
+        # Supprimer + interpréter le signe si "-" est explicitement là
+        val = val.replace("−", "-")  # en cas de tiret spécial
+    else:
+        val = val.replace('(', '-').replace(')', '')
+        val = val.replace('$', '').replace(',', '')
+
     try:
-        if fmt == 'fr':
-            return pd.to_datetime(value, format="%d/%m/%Y %H:%M:%S", errors="coerce")
-        return pd.to_datetime(value, errors="coerce")
-    except:
-        try:
-            return parser.parse(value)
-        except:
-            return pd.NaT
+        return float(val)
+    except ValueError:
+        return np.nan
 
 def load_and_clean_csv(file):
     try:
