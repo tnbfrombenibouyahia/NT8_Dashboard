@@ -546,3 +546,17 @@ if st.button("🔁 Sauvegarder mes données sur Drive", use_container_width=True
         st.success("📦 Données sauvegardées sur Google Drive avec succès !")
     except Exception as e:
         st.error(f"❌ Erreur lors de la sauvegarde : {e}")
+
+
+if authentication_status:
+
+    # ⬇️ Le reste de ton code principal (filtres, affichages, visualisations, etc.)
+
+    st.markdown("---")
+    st.subheader("🧨 Réinitialisation de Google Drive")
+    
+    from drive_reset import reset_all_drive_files
+
+    with st.expander("⚠️ Réinitialiser toutes les données sauvegardées sur Google Drive"):
+        if st.button("🚨 Supprimer tous les fichiers Drive sauvegardés"):
+            reset_all_drive_files()
