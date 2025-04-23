@@ -9,12 +9,15 @@ def parse_money(val, fr_format=False):
         return np.nan
     val = str(val).strip()
     if fr_format:
-        val = val.replace("\xa0", "").replace(" €", "").replace(",", ".")
+        val = val.replace("\xa0", "")  # espace insécable
+        val = val.replace(" €", "").replace("€", "")  # euro après ou avant
+        val = val.replace(",", ".")
     else:
-        val = val.replace('(', '-').replace(')', '').replace('$', '').replace(',', '')
+        val = val.replace('(', '-').replace(')', '')
+        val = val.replace('$', '').replace(',', '')
     try:
         return float(val)
-    except:
+    except ValueError:
         return np.nan
 
 def detect_format(df):
@@ -33,11 +36,14 @@ def parse_datetime(value, fmt):
             return pd.to_datetime(value, format="%d/%m/%Y %H:%M:%S", errors="coerce")
         return pd.to_datetime(value, errors="coerce")
     except:
-        return pd.NaT
+        try:
+            return parser.parse(value)
+        except:
+            return pd.NaT
 
 def load_and_clean_csv(file):
     try:
-        df = pd.read_csv(file, sep=';')
+        df = pd.read_csv(file, sep=None, engine='python')
     except Exception as e:
         import streamlit as st
         st.error(f"❌ Erreur lors de la lecture du fichier CSV : {e}")
