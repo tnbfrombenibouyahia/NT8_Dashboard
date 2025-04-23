@@ -62,6 +62,15 @@ def load_and_clean_csv(file):
         if col in df.columns:
             df[col] = df[col].apply(lambda x: parse_money(x, fr_format=fr_format))
 
+    # ✅ Conversion des prix en float (Entry/Exit price)
+    price_columns = ["Entry price", "Exit price"]
+    for col in price_columns:
+        if col in df.columns:
+            if fr_format:
+                df[col] = df[col].astype(str).str.replace(',', '.').str.replace('\xa0', '').astype(float)
+            else:
+                df[col] = df[col].astype(float)
+
     # Conversion des dates
     if "Entry time" in df.columns:
         df["Entry time"] = df["Entry time"].apply(lambda x: parse_datetime(x, fmt=data_format))
