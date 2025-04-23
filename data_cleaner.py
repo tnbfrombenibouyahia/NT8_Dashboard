@@ -8,32 +8,6 @@ def parse_money(val, fr_format=False):
     if pd.isna(val):
         return np.nan
     val = str(val).strip()
-    if fr_format:
-        val = val.replace("\xa0", "")  # espace insécable
-        val = val.replace(" €", "").replace("€", "")  # euro après ou avant
-        val = val.replace(",", ".")
-    else:
-        val = val.replace('(', '-').replace(')', '')
-        val = val.replace('$', '').replace(',', '')
-    try:
-        return float(val)
-    except ValueError:
-        return np.nan
-
-def detect_format(df):
-    sample_value = str(df.iloc[0].get("Entry time", ""))
-    if 'AM' in sample_value or 'PM' in sample_value:
-        return 'us'
-    # If comma in numerical fields
-    price_val = str(df.iloc[0].get("Entry price", ""))
-    if ',' in price_val and '.' not in price_val:
-        return 'fr'
-    return 'us'
-
-def parse_money(val, fr_format=False):
-    if pd.isna(val):
-        return np.nan
-    val = str(val).strip()
 
     # Format FR
     if fr_format:
@@ -50,6 +24,17 @@ def parse_money(val, fr_format=False):
         return float(val)
     except ValueError:
         return np.nan
+
+def parse_datetime(value, fmt):
+    try:
+        if fmt == 'fr':
+            return pd.to_datetime(value, format="%d/%m/%Y %H:%M:%S", errors="coerce")
+        return pd.to_datetime(value, errors="coerce")
+    except:
+        try:
+            return parser.parse(value)
+        except:
+            return pd.NaT
 
 def load_and_clean_csv(file):
     try:
