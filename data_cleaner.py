@@ -37,7 +37,7 @@ def parse_datetime(value, fmt):
 
 def load_and_clean_csv(file):
     try:
-        df = pd.read_csv(file)
+        df = pd.read_csv(file, sep=';')
     except Exception as e:
         import streamlit as st
         st.error(f"❌ Erreur lors de la lecture du fichier CSV : {e}")
