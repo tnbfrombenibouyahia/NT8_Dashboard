@@ -74,6 +74,12 @@ def load_and_clean_csv(file):
                 df[col] = df[col].astype(str).str.replace(',', '.').str.replace('\xa0', '').astype(float)
             else:
                 df[col] = df[col].astype(float)
+    
+    # Conversion forcée des colonnes numériques utilisées dans les calculs
+    numerical_cols = ["Profit", "Entry price", "Qty"]
+    for col in numerical_cols:
+        if col in df.columns:
+            df[col] = pd.to_numeric(df[col], errors="coerce")
 
     # Conversion des dates
     if "Entry time" in df.columns:
