@@ -79,7 +79,6 @@ authenticator = stauth.Authenticate(
 
 login_result = authenticator.login("Login", "main")
 
-
 try:
     name, authentication_status, username = login_result
 except TypeError:
@@ -229,24 +228,21 @@ st.sidebar.markdown("## 📂 Import Zone")
 uploaded_file = st.sidebar.file_uploader("", type=["csv"])
 
 if uploaded_file:
+    # Chargement et nettoyage
     df_new = load_and_clean_csv(uploaded_file)
 
-    # Fusion avec historique utilisateur (sans doublons)
+    # Fusion avec l'historique propre à l'utilisateur
     user_csv_path = os.path.join(user_data_dir, "trades_historique.csv")
     df_combined, new_count = update_historical_data(df_new, user_csv_path)
+
+    # Logs console (utile sur Streamlit Cloud)
+    print(f"[UPLOAD] ✅ Fichier importé par : {username}")
+    print(f"[UPLOAD] ➕ {new_count} nouveaux trades ajoutés.")
+    print(f"[UPLOAD] 📁 Chemin : {user_csv_path}")
+
+    # Message utilisateur
     st.sidebar.success(f"{new_count} nouveaux trades ajoutés à l'historique. Recharge la page pour voir les changements.")
-
-    if os.path.exists(data_file):
-        df_existing = pd.read_csv(data_file, parse_dates=["Entry time", "Exit time"])
-    else:
-        df_existing = pd.DataFrame()
-
-    df_combined = pd.concat([df_existing, df_new]).drop_duplicates()
-    new_trades_count = len(df_combined) - len(df_existing)
-
-    df_combined.to_csv(data_file, index=False)
-
-    st.sidebar.success(f"{new_trades_count} nouveaux trades ajoutés à l'historique. Recharge la page pour voir les changements.")
+    st.sidebar.info(f"📁 Données sauvegardées dans : `{user_csv_path}`")
 
 # ─────────────────────────────────────────────────────────────────────────
 # Sidebar : Journal de séance
