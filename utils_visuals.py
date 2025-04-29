@@ -415,6 +415,52 @@ def plot_presence_histogram(df, selected_month):
 
     return fig
 
+def plot_pct_mfe_captured(df):
+    df = df.copy()
+    df = df[(df['MFE'] > 0) & (df['ETD'] > 0)]
+    df['% MFE Captured'] = (df['ETD'] / df['MFE']) * 100
+    fig = px.histogram(df, x='% MFE Captured', nbins=30,
+                       title="% du MFE capté par trade",
+                       labels={'% MFE Captured': '% du MFE capté'})
+    return fig
+
+def plot_pct_mae_vs_etd(df):
+    df = df.copy()
+    df = df[(df['MAE'] > 0) & (df['ETD'] > 0)]
+    df['% MAE sur ETD'] = (df['MAE'] / df['ETD']) * 100
+    fig = px.histogram(df, x='% MAE sur ETD', nbins=30,
+                       title="% du MAE encaissé sur profit réalisé",
+                       labels={'% MAE sur ETD': '% MAE / ETD'})
+    return fig
+
+def plot_scatter_mfe_captured(df):
+    df = df.copy()
+    df = df[(df['MFE'] > 0) & (df['ETD'] > 0)]
+    df['% MFE Captured'] = (df['ETD'] / df['MFE']) * 100
+    fig = px.scatter(df, x='% MFE Captured', y='ETD',
+                     title="Scatter : % MFE capté vs Profit réalisé",
+                     labels={'% MFE Captured': '% MFE Capté', 'ETD': 'Profit réalisé'})
+    return fig
+
+def plot_heatmap_mfe_mae(df):
+    df = df.copy()
+    df = df[(df['MFE'] > 0) & (df['MAE'] > 0)]
+    df['% MFE Captured'] = (df['ETD'] / df['MFE']) * 100
+    df['% MAE encaissé'] = (df['MAE'] / df['MFE']) * 100
+    fig = px.density_heatmap(df, x='% MFE Captured', y='% MAE encaissé', nbinsx=20, nbinsy=20,
+                             title="Heatmap : MFE capté vs MAE encaissé",
+                             color_continuous_scale='Blues')
+    return fig
+
+def plot_mfe_vs_time(df):
+    # Suppose que "Durée (min)" existe déjà dans df (tu le crées dans la page principale)
+    df = df.copy()
+    df = df[(df['MFE'] > 0) & (df['Durée (min)'] > 0)]
+    fig = px.scatter(df, x='Durée (min)', y='MFE',
+                     title="Durée vs MFE : est-ce que le potentiel vient tôt ?",
+                     labels={'Durée (min)': 'Durée du trade (min)', 'MFE': 'MFE'})
+    return fig
+
 
 
 

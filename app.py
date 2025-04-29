@@ -28,6 +28,11 @@ from utils_visuals import (
     plot_daily_drawdown,
     plot_histogram_mae_mfe_etd,
     plot_scatter_mfe_vs_profit,
+    plot_pct_mfe_captured,
+    plot_pct_mae_vs_etd,
+    plot_scatter_mfe_captured,
+    plot_heatmap_mfe_mae,
+    plot_mfe_vs_time,
 )
 
 
@@ -450,6 +455,26 @@ cols_targets[0].markdown(render_stat_card("MAE moyen", f"${mae_mean}", "🧨"), 
 cols_targets[1].markdown(render_stat_card("MFE moyen", f"${mfe_mean}", "🍾"), unsafe_allow_html=True)
 cols_targets[2].markdown(render_stat_card("ETD moyen", f"${etd_mean}", "🤺"), unsafe_allow_html=True)
 cols_targets[3].markdown(render_stat_card("Ratio MFE/MAE", mfe_mae_ratio, "🧑‍⚖️"), unsafe_allow_html=True)
+
+# ─────────────────────────────────────────────────────────────────────────
+# 🎯 Analyse des sorties
+# ─────────────────────────────────────────────────────────────────────────
+st.markdown("---")
+st.markdown("## 🎯 Analyse des sorties")
+
+col_exit1, col_exit2 = st.columns(2)
+with col_exit1:
+    st.plotly_chart(plot_pct_mfe_captured(df_filtered), use_container_width=True)
+with col_exit2:
+    st.plotly_chart(plot_pct_mae_vs_etd(df_filtered), use_container_width=True)
+
+col_exit3, col_exit4 = st.columns(2)
+with col_exit3:
+    st.plotly_chart(plot_scatter_mfe_captured(df_filtered), use_container_width=True)
+with col_exit4:
+    st.plotly_chart(plot_heatmap_mfe_mae(df_filtered), use_container_width=True)
+
+st.plotly_chart(plot_mfe_vs_time(df_filtered), use_container_width=True)
 
 # ─────────────────────────────────────────────────────────────────────────
 # Liste des trades filtrés
