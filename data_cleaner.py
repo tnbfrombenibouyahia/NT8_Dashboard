@@ -87,25 +87,26 @@ def load_and_clean_csv(file):
     if "Exit time" in df.columns:
         df["Exit time"] = df["Exit time"].apply(lambda x: parse_datetime(x, fmt=data_format))
 
-    # ID unique
-    if "Trade number" in df.columns:
-        df["trade_id"] = df["Trade number"].astype(str) + "_" + df["Entry time"].astype(str)
-    else:
-        df["trade_id"] = df.index.astype(str) + "_" + df["Entry time"].astype(str)
+    # ID unique uniquement basé sur Entry time
+    df["trade_id"] = df["Entry time"].astype(str) + "_" + df["Instrument"].astype(str)
 
     return df
 
 def update_historical_data(df_new, historical_path):
     if os.path.exists(historical_path):
         df_hist = pd.read_csv(historical_path, parse_dates=["Entry time", "Exit time"])
-        if "Trade number" in df_hist.columns:
-            df_hist["trade_id"] = df_hist["Trade number"].astype(str) + "_" + df_hist["Entry time"].astype(str)
-        else:
-            df_hist["trade_id"] = df_hist.index.astype(str) + "_" + df_hist["Entry time"].astype(str)
-
+        
+        # Génération des identifiants basés sur Entry time + Instrument
+        df_hist["trade_id"] = df_hist["Entry time"].astype(str) + "_" + df_hist["Instrument"].astype(str)
+        df_new["trade_id"] = df_new["Entry time"].astype(str) + "_" + df_new["Instrument"].astype(str)
+        
+        # Détecte les nouveaux trades
         df_to_add = df_new[~df_new["trade_id"].isin(df_hist["trade_id"])]
+        
+        # Fusionne proprement sans doublons
         df_updated = pd.concat([df_hist, df_to_add], ignore_index=True).drop(columns=["trade_id"], errors="ignore")
         df_updated.to_csv(historical_path, index=False)
+        
         return df_updated, len(df_to_add)
     else:
         df_new.drop(columns=["trade_id"], errors="ignore").to_csv(historical_path, index=False)
