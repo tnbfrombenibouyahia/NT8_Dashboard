@@ -454,7 +454,7 @@ cols_targets[1].markdown(render_stat_card("MFE moyen", f"${mfe_mean}", "🍾"), 
 cols_targets[2].markdown(render_stat_card("ETD moyen", f"${etd_mean}", "🤺"), unsafe_allow_html=True)
 cols_targets[3].markdown(render_stat_card("Ratio MFE/MAE", mfe_mae_ratio, "🧑‍⚖️"), unsafe_allow_html=True)
 
-with st.expander("📉 MFE vs Profit réalisé", expanded=True):
+with st.expander("📉 MFE vs Profit réalisé"):
     fig, q1, median, q3, slope = plot_scatter_mfe_vs_profit(df_filtered)
     st.plotly_chart(fig, use_container_width=True)
 
@@ -476,7 +476,7 @@ with st.expander("📉 MFE vs Profit réalisé", expanded=True):
     """)
 
 
-with st.expander("🩻 % du MFE capté par trade", expanded=True):
+with st.expander("🩻 % du MFE capté par trade"):
     st.plotly_chart(plot_pct_mfe_captured(df_filtered), use_container_width=True)
     st.caption("""
     Ce graphique indique le pourcentage du mouvement favorable (MFE) capté par chaque trade.
@@ -511,7 +511,7 @@ with st.expander("🩻 % du MFE capté par trade", expanded=True):
     """)
     
 
-with st.expander("🩻 % du MAE encaissé sur profit réalisé", expanded=True):
+with st.expander("🩻 % du MAE encaissé sur profit réalisé"):
     st.plotly_chart(plot_pct_mae_vs_etd(df_filtered), use_container_width=True)
     st.caption("""
     Ce graphique mesure combien de drawdown (MAE) tu as encaissé **avant de finir en profit**.
