@@ -427,14 +427,22 @@ def plot_pct_mfe_captured(df):
     df = df.dropna(subset=["% MFE Captured"])
     df = df[(df["% MFE Captured"] >= 0) & (df["% MFE Captured"] <= 300)]
 
-    fig = px.histogram(
-        df,
-        x="% MFE Captured",
-        nbins=40,
-        title="🎯 % du MFE capté par trade",
-        labels={"% MFE Captured": "% du MFE capté"},
-        hover_data=["Entry time", "Instrument", "Profit", "MFE"]
-    )
+    # Calcul de l’histogramme manuellement
+    counts, bins = np.histogram(df["% MFE Captured"], bins=40)
+    bin_centers = 0.5 * (bins[:-1] + bins[1:])
+
+    # Création du histogramme avec dégradé rouge → bleu
+    fig = go.Figure(data=[
+        go.Bar(
+            x=bin_centers,
+            y=counts,
+            marker=dict(
+                color=counts,
+                colorscale=[[0, "#ef4444"], [0.5, "#3b82f6"], [1, "#60a5fa"]],
+                colorbar=dict(title="Nombre de trades")
+            )
+        )
+    ])
 
     # Statistiques
     median = df["% MFE Captured"].median()
@@ -442,17 +450,19 @@ def plot_pct_mfe_captured(df):
     q1 = df["% MFE Captured"].quantile(0.25)
     q3 = df["% MFE Captured"].quantile(0.75)
 
-    # Lignes verticales
+    # Lignes statistiques
     fig.add_vline(x=median, line_dash="dash", line_color="white", annotation_text=f"Médiane : {median:.1f}%", annotation_position="top left")
     fig.add_vline(x=mean, line_dash="dot", line_color="orange", annotation_text=f"Moyenne : {mean:.1f}%", annotation_position="top left")
     fig.add_vline(x=q1, line_dash="dot", line_color="green", annotation_text=f"Q1 : {q1:.1f}%", annotation_position="top left")
     fig.add_vline(x=q3, line_dash="dot", line_color="green", annotation_text=f"Q3 : {q3:.1f}%", annotation_position="top right")
 
+    # Mise en forme
     fig.update_layout(
+        title="🎯 % du MFE capté par trade",
         xaxis_title="% du MFE capté",
         yaxis_title="Nombre de trades",
-        bargap=0.1,
-        template="plotly_dark"
+        template="plotly_dark",
+        bargap=0.1
     )
     return fig
 
