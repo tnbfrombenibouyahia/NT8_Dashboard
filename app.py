@@ -443,7 +443,6 @@ with col6:
 st.markdown("---")
 st.markdown("## 👨‍🔬 Optimisation des targets")
 
-st.plotly_chart(plot_histogram_mae_mfe_etd(df_filtered), use_container_width=True, key="hist_mfe")
 st.plotly_chart(plot_scatter_mfe_vs_profit(df_filtered), use_container_width=True, key="mfe_profit")
 
 mae_mean = round(df_filtered["MAE"].mean(), 2) if "MAE" in df_filtered else 0
@@ -506,7 +505,7 @@ with st.expander("🧠 % du MAE encaissé sur profit réalisé", expanded=True):
     Exemples :
     - 20% = tu es resté assez proche de ton prix d’entrée avant de sortir gagnant.
     - 100% = tu as encaissé un drawdown aussi grand que ton profit final.
-    - >100% = tu étais bien dans le rouge avant de finir dans le vert (stress élevé).
+    
 
     👉 Objectif : réduire ces valeurs. Plus tu es capable de sortir gagnant sans gros stress,
     plus ton trading est propre et maîtrisé.
