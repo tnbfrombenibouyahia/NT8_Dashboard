@@ -438,7 +438,7 @@ def plot_pct_mfe_captured(df):
             y=counts,
             marker=dict(
                 color=counts,
-                colorscale=[[0, "#ef4444"], [0.5, "#3b82f6"], [1, "#60a5fa"]],
+                colorscale=[[0, "#ef4444"], [0.5, "#8b5cf6"], [1, "#3b82f6"]],
                 colorbar=dict(title="Nombre de trades")
             )
         )
