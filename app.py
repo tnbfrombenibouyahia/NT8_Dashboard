@@ -34,6 +34,7 @@ from utils_visuals import (
     plot_scatter_mfe_captured,
     plot_heatmap_mfe_mae,
     plot_mfe_vs_time,
+    lot_pnl_distribution_by_asset
 )
 
 
@@ -435,7 +436,7 @@ col5, col6 = st.columns(2)
 with col5:
     st.plotly_chart(plot_asset_distribution(df_filtered), use_container_width=True, key="asset_distr")
 with col6:
-    st.plotly_chart(plot_gain_loss_pie(df_filtered), use_container_width=True, key="gain_loss")
+    st.plotly_chart(plot_pnl_distribution_by_asset(df_filtered), use_container_width=True, key="asset_pnl")
 
 # ─────────────────────────────────────────────────────────────────────────
 # 👨‍🔬 Optimisation des targets

@@ -580,6 +580,23 @@ def plot_mfe_vs_time(df):
     return fig
 
 
+def plot_pnl_distribution_by_asset(df):
+    if df.empty or "Instrument" not in df or "Profit" not in df:
+        return px.pie(title="Aucune donnée")
 
+    df = df.copy()
+    pnl_by_asset = df.groupby("Instrument")["Profit"].sum().reset_index()
+    pnl_by_asset.columns = ["Instrument", "PnL total"]
+
+    fig = px.pie(
+        pnl_by_asset,
+        values="PnL total",
+        names="Instrument",
+        title="💰 Contribution au PnL total par actif",
+        hole=0.4
+    )
+    fig.update_traces(textinfo="percent+label")
+    fig.update_layout(template="plotly_dark")
+    return fig
 
 
