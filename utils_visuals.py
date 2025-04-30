@@ -295,6 +295,16 @@ def plot_scatter_mfe_vs_profit(df):
     if df.empty:
         return px.scatter(title="Aucune donnée")
 
+    df = df.copy()
+    df = df.dropna(subset=["MFE", "Profit"])
+    q1 = df["MFE"].quantile(0.25)
+    median = df["MFE"].median()
+    q3 = df["MFE"].quantile(0.75)
+
+    # Fit ligne de tendance
+    coef = np.polyfit(df["MFE"], df["Profit"], 1)
+    trend = np.poly1d(coef)
+
     fig = px.scatter(
         df,
         x="MFE",
@@ -303,7 +313,19 @@ def plot_scatter_mfe_vs_profit(df):
         labels={"MFE": "Max Favorable Excursion", "Profit": "Profit réalisé"},
         hover_data=["Entry time", "Exit time", "Instrument"]
     )
-    fig.update_traces(marker=dict(size=10, opacity=0.7))
+
+    # Ajouter quartiles
+    fig.add_vline(x=q1, line_dash="dot", line_color="green", annotation_text=f"Q1 : {q1:.1f}$", annotation_position="top left")
+    fig.add_vline(x=median, line_dash="dash", line_color="white", annotation_text=f"Médiane : {median:.1f}$", annotation_position="top left")
+    fig.add_vline(x=q3, line_dash="dot", line_color="green", annotation_text=f"Q3 : {q3:.1f}$", annotation_position="top right")
+
+    # Ajouter droite de tendance
+    x_vals = np.linspace(df["MFE"].min(), df["MFE"].max(), 100)
+    y_vals = trend(x_vals)
+    fig.add_traces(go.Scatter(x=x_vals, y=y_vals, mode='lines', line=dict(color="orange", dash="dot"), name="Tendance"))
+
+    fig.update_layout(template="plotly_dark")
+
     return fig
 
 def plot_heatmap_mae_vs_mfe(df):

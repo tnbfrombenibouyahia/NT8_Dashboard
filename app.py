@@ -445,6 +445,23 @@ st.markdown("## 👨‍🔬 Optimisation des targets")
 
 st.plotly_chart(plot_scatter_mfe_vs_profit(df_filtered), use_container_width=True, key="mfe_profit")
 
+mfe_series = df_filtered["MFE"].dropna()
+q1 = mfe_series.quantile(0.25)
+median = mfe_series.quantile(0.5)
+q3 = mfe_series.quantile(0.75)
+mean = mfe_series.mean()
+
+st.markdown(f"""
+💬 **Analyse du potentiel (MFE) vs Résultat :**
+
+- **Q1 : {q1:.1f}$** → 25% des trades avaient un potentiel **inférieur à {q1:.1f}$**.
+- **Moyenne : {mean:.1f}$** → En moyenne, tes trades présentent un potentiel de **{mean:.1f}$**.
+- **Médiane : {median:.1f}$** → 50% des trades avaient un potentiel supérieur à **{median:.1f}$**.
+- **Q3 : {q3:.1f}$** → 25% des trades avaient un MFE supérieur à **{q3:.1f}$**, ce sont tes meilleures opportunités.
+
+👉 **Objectif** : exploiter davantage les trades à fort potentiel. Une droite de tendance positive est un bon signe, mais une pente faible peut révéler que ce potentiel n’est pas capté efficacement.
+""")
+
 mae_mean = round(df_filtered["MAE"].mean(), 2) if "MAE" in df_filtered else 0
 mfe_mean = round(df_filtered["MFE"].mean(), 2) if "MFE" in df_filtered else 0
 etd_mean = round(df_filtered["ETD"].mean(), 2) if "ETD" in df_filtered else 0
