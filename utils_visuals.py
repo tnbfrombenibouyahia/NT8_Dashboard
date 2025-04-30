@@ -452,9 +452,9 @@ def plot_pct_mfe_captured(df):
 
     # Lignes statistiques
     fig.add_vline(x=median, line_dash="dash", line_color="white", annotation_text=f"Médiane : {median:.1f}%", annotation_position="top left")
-    fig.add_vline(x=mean, line_dash="dot", line_color="orange", annotation_text=f"Moyenne : {mean:.1f}%", annotation_position="top left")
-    fig.add_vline(x=q1, line_dash="dot", line_color="green", annotation_text=f"Q1 : {q1:.1f}%", annotation_position="top left")
-    fig.add_vline(x=q3, line_dash="dot", line_color="green", annotation_text=f"Q3 : {q3:.1f}%", annotation_position="top right")
+    fig.add_vline(x=mean, line_dash="dot", line_color="white", annotation_text=f"Moyenne : {mean:.1f}%", annotation_position="top left")
+    fig.add_vline(x=q1, line_dash="dot", line_color="white", annotation_text=f"Q1 : {q1:.1f}%", annotation_position="top left")
+    fig.add_vline(x=q3, line_dash="dot", line_color="white", annotation_text=f"Q3 : {q3:.1f}%", annotation_position="top right")
 
     # Mise en forme
     fig.update_layout(
