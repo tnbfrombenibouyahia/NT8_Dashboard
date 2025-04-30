@@ -460,29 +460,41 @@ with st.expander("🎯 Suis-je capable de transformer le potentiel ?"):
     st.plotly_chart(fig, use_container_width=True)
 
     st.markdown(f"""
-Ce graphique montre comment le **potentiel maximal d’un trade (MFE)** est relié à ton **profit final**.
+Ce graphique te montre si **tu arrives à convertir le potentiel de tes trades en profit réel**.  
+Autrement dit : est-ce que tu arrives à **prendre ce que le marché t’offre** ou est-ce que tu en laisses sur la table ?
 
 ---
 
-### 📌 Exemples :
-- Si un trade a un MFE de **100** mais termine à **20**, tu n’as capté que **20%** du potentiel.
-- Si un trade a un MFE de **50** et finit à **50**, tu l’as **parfaitement exploité**.
+### 📊 Statistiques issues de TES trades :
+- **Q1 : {q1:.1f}$** → 25% de tes trades n’ont même pas eu un MFE de {q1:.1f}$.  
+  Ce sont de **petits mouvements**, pas très exploitables.
+- **Médiane : {median:.1f}$** → La moitié de tes trades avaient un potentiel supérieur à {median:.1f}$.  
+  Si cette valeur est basse, tu ne laisses pas trop courir.
+- **Q3 : {q3:.1f}$** → Tes meilleures opportunités. 25% de tes trades pouvaient atteindre plus de {q3:.1f}$.
 
 ---
 
-### 📊 Statistiques :
-- **Q1 : {q1:.1f}$** → 25% des trades avaient un potentiel **inférieur à {q1:.1f}$**, ce sont les plus petits mouvements.
-- **Médiane : {median:.1f}$** → 50% des trades avaient un MFE supérieur à **{median:.1f}$**.
-- **Q3 : {q3:.1f}$** → 25% des trades avaient un MFE supérieur à **{q3:.1f}$**, ce sont tes meilleures opportunités.
-- **Pente de la tendance : {slope:.2f}** → Chaque **1$ de potentiel (MFE)** se traduit en moyenne par **{slope:.2f}$ de profit**.
+### 📈 Et la pente alors ?
+- **Pente : {slope:.2f}** → plus elle est proche de **1.0**, mieux c’est.
+- Elle dit : "En moyenne, pour chaque 1$ de potentiel (MFE), je transforme {slope:.2f}$ en vrai profit".
+
+**Donc :**
+- Si pente = 1 → tu prends **tout** ce que le marché t’offre. Parfait.
+- Si pente = 0.5 → tu ne prends que **la moitié** du potentiel. Dommage.
+- Si pente < 0.5 → tu sors trop tôt, ou tu te fais stopper avant que le trade donne.
 
 ---
 
-👉 **Objectif** : atteindre une pente proche de **1.0**.  
-Cela signifie que tu transformes efficacement ton potentiel en résultat.  
-Une pente faible (**< 0.5**) indique que tu laisses souvent **une grosse partie du mouvement sur la table**.
+### 🧠 Objectif simple :
+> Avoir une **pente proche de 1** → ça veut dire que tu laisses tes bons trades respirer et que tu prends vraiment ce qu’ils peuvent donner.
+
+Si tu as une pente basse, c’est que tu :
+- **Sorts trop tôt** par peur,
+- **Manques de plan clair** sur tes objectifs,
+- Ou que **ton stop est trop serré**.
+
+⚙️ Tu peux alors bosser sur ta gestion des sorties pour **laisser vivre les bons trades** plus longtemps.
     """, unsafe_allow_html=False)
-
 
 with st.expander("🧙 Suis-je bon pour sortir près du max de profit ?"):
     st.plotly_chart(plot_pct_mfe_captured(df_filtered), use_container_width=True)
