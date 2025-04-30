@@ -443,15 +443,11 @@ with col6:
 st.markdown("---")
 st.markdown("## 👨‍🔬 Optimisation des targets")
 
-st.plotly_chart(plot_scatter_mfe_vs_profit(df_filtered), use_container_width=True, key="mfe_profit")
+# Récupération du graphique + stats depuis la fonction
+fig_mfe, q1, median, q3, slope = plot_scatter_mfe_vs_profit(df_filtered)
+st.plotly_chart(fig_mfe, use_container_width=True)
 
-# Statistiques pour commentaire interactif
-mfe_series = df_filtered["MFE"].dropna()
-q1 = mfe_series.quantile(0.25)
-median = mfe_series.median()
-q3 = mfe_series.quantile(0.75)
-slope, _ = np.polyfit(df_filtered["MFE"].dropna(), df_filtered["Profit"].dropna(), 1)
-
+# 📊 Commentaire interactif
 st.markdown(f"""
 💬 **Analyse du potentiel (MFE) vs Résultat :**
 
@@ -465,12 +461,13 @@ Ce graphique montre comment le **potentiel maximal d’un trade (MFE)** est reli
 - **Q1 : {q1:.1f}$** → 25% des trades avaient un potentiel **inférieur à {q1:.1f}$**, ce sont les plus petits mouvements.
 - **Médiane : {median:.1f}$** → 50% des trades avaient un MFE supérieur à **{median:.1f}$**.
 - **Q3 : {q3:.1f}$** → 25% des trades avaient un MFE supérieur à **{q3:.1f}$**, ce sont tes meilleures opportunités.
-- **Pente de la tendance : {slope:.2f}** → Cela signifie qu’en moyenne, chaque **1$ de potentiel (MFE)** se traduit par **{slope:.2f}$ de profit**.
+- **Pente de la tendance : {slope:.2f}** → En moyenne, **1$ de potentiel (MFE)** se traduit par **{slope:.2f}$ de profit**.
 
-👉 **Objectif** : avoir une pente de tendance élevée (proche de 1), ce qui indique que tu transformes efficacement ton potentiel en résultat.  
-Une pente faible signifie que tu laisses beaucoup d’argent "sur la table", malgré de belles opportunités.
+👉 **Objectif** : avoir une pente proche de 1. Cela signifie que tu transformes efficacement ton potentiel en résultat.  
+Une pente faible (< 0.5) indique que tu laisses souvent **une grosse partie du mouvement sur la table**.
 """)
 
+# 📦 Moyennes + ratio
 mae_mean = round(df_filtered["MAE"].mean(), 2) if "MAE" in df_filtered else 0
 mfe_mean = round(df_filtered["MFE"].mean(), 2) if "MFE" in df_filtered else 0
 etd_mean = round(df_filtered["ETD"].mean(), 2) if "ETD" in df_filtered else 0

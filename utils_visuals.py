@@ -293,7 +293,7 @@ def plot_histogram_mae_mfe_etd(df):
 
 def plot_scatter_mfe_vs_profit(df):
     if df.empty:
-        return px.scatter(title="Aucune donnée")
+        return px.scatter(title="Aucune donnée"), None, None, None, None
 
     df = df.copy()
     df = df.dropna(subset=["MFE", "Profit"])
@@ -303,16 +303,11 @@ def plot_scatter_mfe_vs_profit(df):
     median = df["MFE"].median()
     q3 = df["MFE"].quantile(0.75)
 
-    # Régression linéaire
-    x = df["MFE"]
-    y = df["Profit"]
-    slope, intercept = np.polyfit(x, y, 1)
+    # Régression
+    slope, intercept = np.polyfit(df["MFE"], df["Profit"], 1)
+    x_vals = np.linspace(df["MFE"].min(), df["MFE"].max(), 100)
+    y_vals = slope * x_vals + intercept
 
-    # Droite de tendance
-    x_range = np.linspace(x.min(), x.max(), 100)
-    y_pred = slope * x_range + intercept
-
-    # Création du graphique
     fig = px.scatter(
         df,
         x="MFE",
@@ -322,27 +317,14 @@ def plot_scatter_mfe_vs_profit(df):
         hover_data=["Entry time", "Exit time", "Instrument"]
     )
 
-    # Ajout de la droite de tendance
-    fig.add_trace(go.Scatter(
-        x=x_range,
-        y=y_pred,
-        mode='lines',
-        name="Tendance",
-        line=dict(dash="dot", color="orange")
-    ))
+    fig.add_trace(go.Scatter(x=x_vals, y=y_vals, mode="lines", name="Tendance", line=dict(dash="dot", color="orange")))
 
-    # Ajout des lignes de quartiles
     fig.add_vline(x=q1, line_dash="dot", line_color="green", annotation_text=f"Q1 : {q1:.1f}$", annotation_position="top left")
     fig.add_vline(x=median, line_dash="dash", line_color="white", annotation_text=f"Médiane : {median:.1f}$", annotation_position="top left")
     fig.add_vline(x=q3, line_dash="dot", line_color="green", annotation_text=f"Q3 : {q3:.1f}$", annotation_position="top right")
 
-    fig.update_layout(
-        xaxis_title="Max Favorable Excursion",
-        yaxis_title="Profit réalisé",
-        template="plotly_dark"
-    )
-
-    return fig
+    fig.update_layout(template="plotly_dark")
+    return fig, q1, median, q3, slope
 
 
 def plot_heatmap_mae_vs_mfe(df):
