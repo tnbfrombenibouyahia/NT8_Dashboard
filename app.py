@@ -561,7 +561,7 @@ st.subheader("🎞️ Dernière Session")
 
 dates_dispo = sorted(journal.keys())
 if len(dates_dispo) >= 1:
-    if "note_index" not in st.sess🏄‍♂️ion_state:
+    if "note_index" not in st.session_state:
         st.session_state.note_index = len(dates_dispo) - 1
 
     colA, colB, colC = st.columns([1,6,1])
