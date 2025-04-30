@@ -472,14 +472,26 @@ def plot_pct_mae_vs_etd(df):
     df = df.dropna(subset=["% MAE / ETD"])
     df = df[(df["% MAE / ETD"] >= 0) & (df["% MAE / ETD"] <= 300)]
 
-    fig = px.histogram(
-        df,
-        x="% MAE / ETD",
-        nbins=40,
-        title="🧨 % du MAE encaissé sur profit réalisé",
-        labels={"% MAE / ETD": "% MAE / Profit"},
-        hover_data=["Entry time", "Instrument", "MAE", "ETD"]
-    )
+    # Créer les bins manuellement pour accéder aux fréquences
+    counts, bins = np.histogram(df["% MAE / ETD"], bins=40)
+    bin_centers = 0.5 * (bins[1:] + bins[:-1])
+
+    # Créer le graphique manuellement avec go.Bar pour pouvoir appliquer un dégradé
+    fig = go.Figure(data=[
+        go.Bar(
+            x=bin_centers,
+            y=counts,
+            marker=dict(
+                color=counts,
+                colorscale=[
+                    [0.0, "#ef4444"],  # Rouge
+                    [0.5, "#8b5cf6"],  # Violet
+                    [1.0, "#3b82f6"]   # Bleu
+                ],
+                colorbar=dict(title="Nombre de trades")
+            )
+        )
+    ])
 
     # Statistiques
     median = df["% MAE / ETD"].median()
@@ -487,16 +499,14 @@ def plot_pct_mae_vs_etd(df):
     q1 = df["% MAE / ETD"].quantile(0.25)
     q3 = df["% MAE / ETD"].quantile(0.75)
 
-    fig.add_vline(x=median, line_dash="dash", line_color="white",
-              annotation_text=f"Médiane : {median:.1f}%", annotation_position="top left")
-    fig.add_vline(x=mean, line_dash="dot", line_color="orange",
-                annotation_text=f"Moyenne : {mean:.1f}%", annotation_position="bottom left")
-    fig.add_vline(x=q1, line_dash="dot", line_color="green",
-                annotation_text=f"Q1 : {q1:.1f}%", annotation_position="top right")
-    fig.add_vline(x=q3, line_dash="dot", line_color="green",
-                annotation_text=f"Q3 : {q3:.1f}%", annotation_position="bottom right")
+    # Ajouter lignes de stats
+    fig.add_vline(x=median, line_dash="dash", line_color="white", annotation_text=f"Médiane : {median:.1f}%", annotation_position="top left")
+    fig.add_vline(x=mean, line_dash="dot", line_color="orange", annotation_text=f"Moyenne : {mean:.1f}%", annotation_position="bottom left")
+    fig.add_vline(x=q1, line_dash="dot", line_color="green", annotation_text=f"Q1 : {q1:.1f}%", annotation_position="top right")
+    fig.add_vline(x=q3, line_dash="dot", line_color="green", annotation_text=f"Q3 : {q3:.1f}%", annotation_position="bottom right")
 
     fig.update_layout(
+        title="🧨 % du MAE encaissé sur profit réalisé",
         xaxis_title="% du MAE encaissé",
         yaxis_title="Nombre de trades",
         bargap=0.1,
