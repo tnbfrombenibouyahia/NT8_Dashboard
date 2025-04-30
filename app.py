@@ -34,7 +34,7 @@ from utils_visuals import (
     plot_scatter_mfe_captured,
     plot_heatmap_mfe_mae,
     plot_mfe_vs_time,
-    lot_pnl_distribution_by_asset
+    plot_pnl_distribution_by_asset
 )
 
 
