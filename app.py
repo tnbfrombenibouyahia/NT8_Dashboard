@@ -477,14 +477,6 @@ with st.expander("🧠 % du MAE encaissé sur profit réalisé", expanded=True):
     Moins ce chiffre est élevé, mieux c’est.
     """)
 
-col1, col2 = st.columns(2)
-with col1:
-    st.plotly_chart(plot_scatter_mfe_captured(df_filtered), use_container_width=True)
-    st.caption("Scatter entre % MFE capté et profit réalisé. Plus c’est en haut à droite, mieux c’est.")
-with col2:
-    st.plotly_chart(plot_heatmap_mfe_mae(df_filtered), use_container_width=True)
-    st.caption("Heatmap entre % MFE capté et % MAE encaissé. Objectif : concentrer en bas à droite.")
-
 # ─────────────────────────────────────────────────────────────────────────
 # Liste des trades filtrés
 # ─────────────────────────────────────────────────────────────────────────
