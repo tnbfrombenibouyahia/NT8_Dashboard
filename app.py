@@ -437,11 +437,18 @@ with col5:
 with col6:
     st.plotly_chart(plot_gain_loss_pie(df_filtered), use_container_width=True, key="gain_loss")
 
+
 # ─────────────────────────────────────────────────────────────────────────
-# 👨‍🔬 Optimisation des targets
+# 🎯 Analyse des sorties
 # ─────────────────────────────────────────────────────────────────────────
 st.markdown("---")
-st.header("👨‍🔬 Optimisation des targets")
+st.header("🎯 Analyse des sorties")
+
+cols_targets = st.columns(4)
+cols_targets[0].markdown(render_stat_card("MAE moyen", f"${mae_mean}", "🧨"), unsafe_allow_html=True)
+cols_targets[1].markdown(render_stat_card("MFE moyen", f"${mfe_mean}", "🍾"), unsafe_allow_html=True)
+cols_targets[2].markdown(render_stat_card("ETD moyen", f"${etd_mean}", "🤺"), unsafe_allow_html=True)
+cols_targets[3].markdown(render_stat_card("Ratio MFE/MAE", mfe_mae_ratio, "🧑‍⚖️"), unsafe_allow_html=True)
 
 with st.expander("📉 MFE vs Profit réalisé", expanded=True):
     fig, q1, median, q3, slope = plot_scatter_mfe_vs_profit(df_filtered)
@@ -469,17 +476,6 @@ with st.expander("📉 MFE vs Profit réalisé", expanded=True):
     etd_mean = round(df_filtered["ETD"].mean(), 2) if "ETD" in df_filtered else 0
     mfe_mae_ratio = round(mfe_mean / mae_mean, 2) if mae_mean != 0 else 0
 
-cols_targets = st.columns(4)
-cols_targets[0].markdown(render_stat_card("MAE moyen", f"${mae_mean}", "🧨"), unsafe_allow_html=True)
-cols_targets[1].markdown(render_stat_card("MFE moyen", f"${mfe_mean}", "🍾"), unsafe_allow_html=True)
-cols_targets[2].markdown(render_stat_card("ETD moyen", f"${etd_mean}", "🤺"), unsafe_allow_html=True)
-cols_targets[3].markdown(render_stat_card("Ratio MFE/MAE", mfe_mae_ratio, "🧑‍⚖️"), unsafe_allow_html=True)
-
-# ─────────────────────────────────────────────────────────────────────────
-# 🎯 Analyse des sorties
-# ─────────────────────────────────────────────────────────────────────────
-st.markdown("---")
-st.header("🎯 Analyse des sorties")
 
 with st.expander("🩻 % du MFE capté par trade", expanded=True):
     st.plotly_chart(plot_pct_mfe_captured(df_filtered), use_container_width=True)
