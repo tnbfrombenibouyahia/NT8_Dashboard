@@ -477,10 +477,14 @@ def plot_pct_mae_vs_etd(df):
     q1 = df["% MAE / ETD"].quantile(0.25)
     q3 = df["% MAE / ETD"].quantile(0.75)
 
-    fig.add_vline(x=median, line_dash="dash", line_color="white", annotation_text=f"Médiane : {median:.1f}%", annotation_position="top left")
-    fig.add_vline(x=mean, line_dash="dot", line_color="orange", annotation_text=f"Moyenne : {mean:.1f}%", annotation_position="top left")
-    fig.add_vline(x=q1, line_dash="dot", line_color="green", annotation_text=f"Q1 : {q1:.1f}%", annotation_position="top left")
-    fig.add_vline(x=q3, line_dash="dot", line_color="green", annotation_text=f"Q3 : {q3:.1f}%", annotation_position="top right")
+    fig.add_vline(x=median, line_dash="dash", line_color="white",
+              annotation_text=f"Médiane : {median:.1f}%", annotation_position="top left")
+    fig.add_vline(x=mean, line_dash="dot", line_color="orange",
+                annotation_text=f"Moyenne : {mean:.1f}%", annotation_position="bottom left")
+    fig.add_vline(x=q1, line_dash="dot", line_color="green",
+                annotation_text=f"Q1 : {q1:.1f}%", annotation_position="top right")
+    fig.add_vline(x=q3, line_dash="dot", line_color="green",
+                annotation_text=f"Q3 : {q3:.1f}%", annotation_position="bottom right")
 
     fig.update_layout(
         xaxis_title="% du MAE encaissé",
