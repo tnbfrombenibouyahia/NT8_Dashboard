@@ -454,7 +454,7 @@ cols_targets[1].markdown(render_stat_card("MFE moyen", f"${mfe_mean}", "🍾"), 
 cols_targets[2].markdown(render_stat_card("ETD moyen", f"${etd_mean}", "🤺"), unsafe_allow_html=True)
 cols_targets[3].markdown(render_stat_card("Ratio MFE/MAE", mfe_mae_ratio, "🧑‍⚖️"), unsafe_allow_html=True)
 
-with st.expander("🎯 ANALYSE : Exploitation du potentiel (MFE vs Profit) │ Suis-je capable de transformer le potentiel ?"):
+with st.expander("🎯 Suis-je capable de transformer le potentiel ?"):
     fig, q1, median, q3, slope = plot_scatter_mfe_vs_profit(df_filtered)
     st.plotly_chart(fig, use_container_width=True)
 
@@ -476,7 +476,7 @@ with st.expander("🎯 ANALYSE : Exploitation du potentiel (MFE vs Profit) │ S
     """)
 
 
-with st.expander("🧙 ANALYSE : Efficacité des sorties (Pourcentage du  MFE capté) │ Suis-je bon pour sortir près du max de profit ?"):
+with st.expander("🧙 Suis-je bon pour sortir près du max de profit ?"):
     st.plotly_chart(plot_pct_mfe_captured(df_filtered), use_container_width=True)
     st.caption("""
     Ce graphique indique le pourcentage du mouvement favorable (MFE) capté par chaque trade.
@@ -511,7 +511,7 @@ with st.expander("🧙 ANALYSE : Efficacité des sorties (Pourcentage du  MFE ca
     """)
     
 
-with st.expander("🌶️ ANALYSE : Stress enduré avant profit (Pourcentage du MAE encaissé) │ Combien de drawdown je supporte avant de gagner ?"):
+with st.expander("🌶️ Combien de drawdown je supporte avant de gagner ?"):
     st.plotly_chart(plot_pct_mae_vs_etd(df_filtered), use_container_width=True)
     st.caption("""
     Ce graphique mesure combien de drawdown (MAE) tu as encaissé **avant de finir en profit**.
