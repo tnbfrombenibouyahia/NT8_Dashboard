@@ -424,39 +424,96 @@ def clean_outliers(df, column, lower=0, upper=300):
 def plot_pct_mfe_captured(df):
     df = df.copy()
     df["% MFE Captured"] = (df["Profit"] / df["MFE"] * 100).replace([np.inf, -np.inf], np.nan)
-    df = clean_outliers(df, "% MFE Captured", 0, 300)
     df = df.dropna(subset=["% MFE Captured"])
-    fig = px.histogram(df, x="% MFE Captured", nbins=50)
-    fig.update_layout(title="% du MFE capté par trade")
+
+    # Clamp values à 300 max
+    df = df[(df["% MFE Captured"] >= 0) & (df["% MFE Captured"] <= 300)]
+
+    fig = px.histogram(
+        df,
+        x="% MFE Captured",
+        nbins=40,
+        title="🎯 % du MFE capté par trade",
+        labels={"% MFE Captured": "% du MFE capté"},
+        hover_data=["Entry time", "Instrument", "Profit", "MFE"]
+    )
+
+    # Ajouter une ligne médiane
+    median = df["% MFE Captured"].median()
+    fig.add_vline(x=median, line_dash="dash", line_color="white",
+                  annotation_text=f"Médiane : {median:.1f}%", annotation_position="top right")
+
+    # Mise en forme
+    fig.update_layout(
+        xaxis_title="% du MFE capté",
+        yaxis_title="Nombre de trades",
+        bargap=0.1,
+        template="plotly_dark"
+    )
+
     return fig
 
 def plot_pct_mae_vs_etd(df):
     df = df.copy()
     df["% MAE / ETD"] = (df["MAE"] / df["ETD"] * 100).replace([np.inf, -np.inf], np.nan)
-    df = clean_outliers(df, "% MAE / ETD", 0, 300)
     df = df.dropna(subset=["% MAE / ETD"])
-    fig = px.histogram(df, x="% MAE / ETD", nbins=50)
-    fig.update_layout(title="% du MAE encaissé sur profit réalisé")
+    df = df[(df["% MAE / ETD"] >= 0) & (df["% MAE / ETD"] <= 300)]
+
+    fig = px.histogram(
+        df,
+        x="% MAE / ETD",
+        nbins=40,
+        title="🧨 % du MAE encaissé sur profit réalisé",
+        labels={"% MAE / ETD": "% MAE / Profit"},
+        hover_data=["Entry time", "Instrument", "MAE", "ETD"]
+    )
+
+    fig.add_vline(x=df["% MAE / ETD"].median(), line_dash="dash", line_color="white",
+                  annotation_text="Médiane", annotation_position="top right")
+
+    fig.update_layout(
+        xaxis_title="% du MAE encaissé",
+        yaxis_title="Nombre de trades",
+        bargap=0.1,
+        template="plotly_dark"
+    )
     return fig
 
 def plot_scatter_mfe_captured(df):
     df = df.copy()
     df["% MFE Captured"] = (df["Profit"] / df["MFE"] * 100).replace([np.inf, -np.inf], np.nan)
-    df = clean_outliers(df, "% MFE Captured", 0, 300)
     df = df.dropna(subset=["% MFE Captured"])
-    fig = px.scatter(df, x="% MFE Captured", y="Profit")
-    fig.update_layout(title="Scatter : % MFE capté vs Profit réalisé")
+    df = df[(df["% MFE Captured"] >= 0) & (df["% MFE Captured"] <= 300)]
+
+    fig = px.scatter(
+        df,
+        x="% MFE Captured",
+        y="Profit",
+        title="🔁 Scatter : % MFE capté vs Profit réalisé",
+        hover_data=["Entry time", "Instrument"],
+        labels={"Profit": "Profit réalisé", "% MFE Captured": "% MFE capté"}
+    )
+    fig.update_layout(template="plotly_dark")
     return fig
 
 def plot_heatmap_mfe_mae(df):
     df = df.copy()
     df["% MFE Captured"] = (df["Profit"] / df["MFE"] * 100).replace([np.inf, -np.inf], np.nan)
     df["% MAE Captured"] = (df["MAE"] / df["Profit"] * 100).replace([np.inf, -np.inf], np.nan)
-    df = clean_outliers(df, "% MFE Captured", 0, 300)
-    df = clean_outliers(df, "% MAE Captured", 0, 300)
     df = df.dropna(subset=["% MFE Captured", "% MAE Captured"])
-    fig = px.density_heatmap(df, x="% MFE Captured", y="% MAE Captured", nbinsx=40, nbinsy=40, color_continuous_scale="blues")
-    fig.update_layout(title="Heatmap : MFE capté vs MAE encaissé")
+    df = df[(df["% MFE Captured"] >= 0) & (df["% MFE Captured"] <= 300)]
+    df = df[(df["% MAE Captured"] >= 0) & (df["% MAE Captured"] <= 300)]
+
+    fig = px.density_heatmap(
+        df,
+        x="% MFE Captured",
+        y="% MAE Captured",
+        nbinsx=40,
+        nbinsy=40,
+        color_continuous_scale="Blues",
+        title="🌡️ Heatmap : % MFE capté vs % MAE encaissé"
+    )
+    fig.update_layout(template="plotly_dark")
     return fig
 
 def plot_mfe_vs_time(df):

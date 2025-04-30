@@ -460,21 +460,30 @@ cols_targets[3].markdown(render_stat_card("Ratio MFE/MAE", mfe_mae_ratio, "🧑�
 # 🎯 Analyse des sorties
 # ─────────────────────────────────────────────────────────────────────────
 st.markdown("---")
-st.markdown("## 🎯 Analyse des sorties")
+st.header("🎯 Analyse des sorties")
 
-col_exit1, col_exit2 = st.columns(2)
-with col_exit1:
+with st.expander("🧠 % du MFE capté par trade", expanded=True):
     st.plotly_chart(plot_pct_mfe_captured(df_filtered), use_container_width=True)
-with col_exit2:
+    st.caption("""
+    Ce graphique montre combien de % du potentiel favorable a été capté par chaque trade.
+    100% = sortie parfaite, 50% = moitié du potentiel capté.
+    Objectif : augmenter ce ratio sans sacrifier le risk management.
+    """)
+
+with st.expander("🧠 % du MAE encaissé sur profit réalisé", expanded=True):
     st.plotly_chart(plot_pct_mae_vs_etd(df_filtered), use_container_width=True)
+    st.caption("""
+    Cette statistique mesure combien de drawdown a été encaissé avant de sortir gagnant.
+    Moins ce chiffre est élevé, mieux c’est.
+    """)
 
-col_exit3, col_exit4 = st.columns(2)
-with col_exit3:
+col1, col2 = st.columns(2)
+with col1:
     st.plotly_chart(plot_scatter_mfe_captured(df_filtered), use_container_width=True)
-with col_exit4:
+    st.caption("Scatter entre % MFE capté et profit réalisé. Plus c’est en haut à droite, mieux c’est.")
+with col2:
     st.plotly_chart(plot_heatmap_mfe_mae(df_filtered), use_container_width=True)
-
-st.plotly_chart(plot_mfe_vs_time(df_filtered), use_container_width=True)
+    st.caption("Heatmap entre % MFE capté et % MAE encaissé. Objectif : concentrer en bas à droite.")
 
 # ─────────────────────────────────────────────────────────────────────────
 # Liste des trades filtrés
