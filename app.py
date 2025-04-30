@@ -459,22 +459,29 @@ with st.expander("🎯 Suis-je capable de transformer le potentiel ?"):
     fig, q1, median, q3, slope = plot_scatter_mfe_vs_profit(df_filtered)
     st.plotly_chart(fig, use_container_width=True)
 
-    st.caption(f"""
-    Ce graphique montre comment le **potentiel maximal d’un trade (MFE)** est relié à ton **profit final**.
+    st.markdown(f"""
+Ce graphique montre comment le **potentiel maximal d’un trade (MFE)** est relié à ton **profit final**.
 
-    **Exemples** :
-    - Si un trade a un MFE de **100** mais termine à **20**, tu n’as capté que **20%** du potentiel.
-    - Si un trade a un MFE de **50** et finit à **50**, tu l’as **parfaitement exploité**.
+---
 
-    **Statistiques** :
-    - **Q1 : {q1:.1f}$** → 25% des trades avaient un potentiel **inférieur à {q1:.1f}$**, ce sont les plus petits mouvements.
-    - **Médiane : {median:.1f}$** → 50% des trades avaient un MFE supérieur à **{median:.1f}$**.
-    - **Q3 : {q3:.1f}$** → 25% des trades avaient un MFE supérieur à **{q3:.1f}$**, ce sont tes meilleures opportunités.
-    - **Pente de la tendance : {slope:.2f}** → Cela signifie qu’en moyenne, chaque **1$ de potentiel (MFE)** se traduit par **{slope:.2f}$ de profit**.
+### 📌 Exemples :
+- Si un trade a un MFE de **100** mais termine à **20**, tu n’as capté que **20%** du potentiel.
+- Si un trade a un MFE de **50** et finit à **50**, tu l’as **parfaitement exploité**.
 
-    👉 **Objectif** : avoir une pente proche de 1. Cela signifie que tu transformes efficacement ton potentiel en résultat.  
-    Une pente faible (< 0.5) indique que tu laisses souvent **une grosse partie du mouvement sur la table**.
-    """)
+---
+
+### 📊 Statistiques :
+- **Q1 : {q1:.1f}$** → 25% des trades avaient un potentiel **inférieur à {q1:.1f}$**, ce sont les plus petits mouvements.
+- **Médiane : {median:.1f}$** → 50% des trades avaient un MFE supérieur à **{median:.1f}$**.
+- **Q3 : {q3:.1f}$** → 25% des trades avaient un MFE supérieur à **{q3:.1f}$**, ce sont tes meilleures opportunités.
+- **Pente de la tendance : {slope:.2f}** → Chaque **1$ de potentiel (MFE)** se traduit en moyenne par **{slope:.2f}$ de profit**.
+
+---
+
+👉 **Objectif** : atteindre une pente proche de **1.0**.  
+Cela signifie que tu transformes efficacement ton potentiel en résultat.  
+Une pente faible (**< 0.5**) indique que tu laisses souvent **une grosse partie du mouvement sur la table**.
+    """, unsafe_allow_html=False)
 
 
 with st.expander("🧙 Suis-je bon pour sortir près du max de profit ?"):
