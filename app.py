@@ -512,6 +512,26 @@ with st.expander("🧠 % du MAE encaissé sur profit réalisé", expanded=True):
     plus ton trading est propre et maîtrisé.
     """)
 
+    # Calculs pour analyse interactive du MAE
+    mae_series = (df_filtered["MAE"] / df_filtered["ETD"] * 100).replace([np.inf, -np.inf], np.nan).dropna()
+    mae_series = mae_series[(mae_series >= 0) & (mae_series <= 300)]
+
+    q1_mae = mae_series.quantile(0.25)
+    mean_mae = mae_series.mean()
+    median_mae = mae_series.median()
+    q3_mae = mae_series.quantile(0.75)
+
+    st.markdown(f"""
+    💬 **Analyse du stress (MAE) encaissé avant profit :**
+
+    - **Q1 : {q1_mae:.1f}%** → 25% des trades gagnants ont encaissé **moins de {q1_mae:.1f}%** de drawdown avant de finir en profit. Cela traduit une bonne précision ou un timing propre.
+    - **Moyenne : {mean_mae:.1f}%** → En moyenne, tu encaisses **{mean_mae:.1f}%** de drawdown par rapport à ton gain. Moins c’est élevé, plus ton trade est stable.
+    - **Médiane : {median_mae:.1f}%** → 50% des trades ont encaissé moins de **{median_mae:.1f}%**, c’est ton niveau médian de stress avant gain.
+    - **Q3 : {q3_mae:.1f}%** → 25% des trades gagnants ont encaissé plus de **{q3_mae:.1f}%** de drawdown : c’est ton quart le plus stressant.
+
+    👉 **Objectif** : faire baisser la moyenne et la médiane pour un trading plus propre et maîtrisé. Une médiane < 50% indique que tu restes souvent proche de ton point d’entrée avant de sortir gagnant, ce qui est excellent.
+    """)
+
 # ─────────────────────────────────────────────────────────────────────────
 # Liste des trades filtrés
 # ─────────────────────────────────────────────────────────────────────────
