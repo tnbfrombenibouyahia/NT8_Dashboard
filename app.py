@@ -459,7 +459,7 @@ with st.expander("🎯 Suis-je capable de transformer le potentiel ?"):
     fig, q1, median, q3, slope = plot_scatter_mfe_vs_profit(df_filtered)
     st.plotly_chart(fig, use_container_width=True)
 
-    st.markdown(f"""
+    st.caption(f"""
     Ce graphique montre comment le **potentiel maximal d’un trade (MFE)** est relié à ton **profit final**.
 
     **Exemples** :
