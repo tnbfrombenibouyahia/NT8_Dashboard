@@ -476,6 +476,26 @@ with st.expander("🧠 % du MFE capté par trade", expanded=True):
     sans augmenter ton risque. Un bon trader capture efficacement sans rester trop longtemps.
     """)
     
+    # Calculs pour le commentaire interactif
+    mfe_series = (df_filtered["Profit"] / df_filtered["MFE"] * 100).replace([np.inf, -np.inf], np.nan).dropna()
+    mfe_series = mfe_series[(mfe_series >= 0) & (mfe_series <= 300)]
+
+    q1 = mfe_series.quantile(0.25)
+    mean = mfe_series.mean()
+    median = mfe_series.median()
+    q3 = mfe_series.quantile(0.75)
+
+    st.markdown(f"""
+    💬 **Analyse des sorties :**
+
+    - **Q1 : {q1:.1f}%** → 25% des trades ont capté **moins de {q1:.1f}%** du mouvement favorable. Cela peut indiquer des sorties trop précoces ou un manque de confiance.
+    - **Moyenne : {mean:.1f}%** → En moyenne, tu captures **{mean:.1f}%** du potentiel. C'est ton niveau global d'efficacité de sortie.
+    - **Médiane : {median:.1f}%** → 50% des trades capturent plus de **{median:.1f}%**, l'autre moitié moins. Une médiane supérieure à 70% est déjà **très solide**.
+    - **Q3 : {q3:.1f}%** → 25% des trades les plus efficaces captent plus de **{q3:.1f}%**, ce sont tes meilleures sorties.
+
+    👉 **Objectif** : faire monter la médiane et la moyenne vers Q3, tout en gardant un bon ratio gain/risque. Une courbe étalée avec un Q1 très bas peut indiquer des trades gâchés malgré du potentiel.
+    """)
+    
 
 with st.expander("🧠 % du MAE encaissé sur profit réalisé", expanded=True):
     st.plotly_chart(plot_pct_mae_vs_etd(df_filtered), use_container_width=True)
