@@ -438,40 +438,36 @@ with col6:
     st.plotly_chart(plot_gain_loss_pie(df_filtered), use_container_width=True, key="gain_loss")
 
 # ─────────────────────────────────────────────────────────────────────────
-# Optimisation des targets
+# 👨‍🔬 Optimisation des targets
 # ─────────────────────────────────────────────────────────────────────────
 st.markdown("---")
-st.markdown("## 👨‍🔬 Optimisation des targets")
+st.header("👨‍🔬 Optimisation des targets")
 
-# Récupération du graphique + stats depuis la fonction
-fig_mfe, q1, median, q3, slope = plot_scatter_mfe_vs_profit(df_filtered)
-st.plotly_chart(fig_mfe, use_container_width=True)
+with st.expander("📉 MFE vs Profit réalisé", expanded=True):
+    fig, q1, median, q3, slope = plot_scatter_mfe_vs_profit(df_filtered)
+    st.plotly_chart(fig, use_container_width=True)
 
-# 📊 Commentaire interactif
-st.markdown(f"""
-💬 **Analyse du potentiel (MFE) vs Résultat :**
+    st.markdown(f"""
+    Ce graphique montre comment le **potentiel maximal d’un trade (MFE)** est relié à ton **profit final**.
 
-Ce graphique montre comment le **potentiel maximal d’un trade (MFE)** est relié à ton **profit final**.
+    **Exemples** :
+    - Si un trade a un MFE de **100** mais termine à **20**, tu n’as capté que **20%** du potentiel.
+    - Si un trade a un MFE de **50** et finit à **50**, tu l’as **parfaitement exploité**.
 
-**Exemples :**
-- Si un trade a un MFE de 100$ mais termine à 20$, tu n’as capté que 20% du potentiel.
-- Si un trade a un MFE de 50$ et finit à 50$, tu l’as parfaitement exploité.
+    **Statistiques** :
+    - **Q1 : {q1:.1f}$** → 25% des trades avaient un potentiel **inférieur à {q1:.1f}$**, ce sont les plus petits mouvements.
+    - **Médiane : {median:.1f}$** → 50% des trades avaient un MFE supérieur à **{median:.1f}$**.
+    - **Q3 : {q3:.1f}$** → 25% des trades avaient un MFE supérieur à **{q3:.1f}$**, ce sont tes meilleures opportunités.
+    - **Pente de la tendance : {slope:.2f}** → Cela signifie qu’en moyenne, chaque **1$ de potentiel (MFE)** se traduit par **{slope:.2f}$ de profit**.
 
-**Statistiques :**
-- **Q1 : {q1:.1f}$** → 25% des trades avaient un potentiel **inférieur à {q1:.1f}$**, ce sont les plus petits mouvements.
-- **Médiane : {median:.1f}$** → 50% des trades avaient un MFE supérieur à **{median:.1f}$**.
-- **Q3 : {q3:.1f}$** → 25% des trades avaient un MFE supérieur à **{q3:.1f}$**, ce sont tes meilleures opportunités.
-- **Pente de la tendance : {slope:.2f}** → En moyenne, **1$ de potentiel (MFE)** se traduit par **{slope:.2f}$ de profit**.
+    👉 **Objectif** : avoir une pente proche de 1. Cela signifie que tu transformes efficacement ton potentiel en résultat.  
+    Une pente faible (< 0.5) indique que tu laisses souvent **une grosse partie du mouvement sur la table**.
+    """)
 
-👉 **Objectif** : avoir une pente proche de 1. Cela signifie que tu transformes efficacement ton potentiel en résultat.  
-Une pente faible (< 0.5) indique que tu laisses souvent **une grosse partie du mouvement sur la table**.
-""")
-
-# 📦 Moyennes + ratio
-mae_mean = round(df_filtered["MAE"].mean(), 2) if "MAE" in df_filtered else 0
-mfe_mean = round(df_filtered["MFE"].mean(), 2) if "MFE" in df_filtered else 0
-etd_mean = round(df_filtered["ETD"].mean(), 2) if "ETD" in df_filtered else 0
-mfe_mae_ratio = round(mfe_mean / mae_mean, 2) if mae_mean != 0 else 0
+    mae_mean = round(df_filtered["MAE"].mean(), 2) if "MAE" in df_filtered else 0
+    mfe_mean = round(df_filtered["MFE"].mean(), 2) if "MFE" in df_filtered else 0
+    etd_mean = round(df_filtered["ETD"].mean(), 2) if "ETD" in df_filtered else 0
+    mfe_mae_ratio = round(mfe_mean / mae_mean, 2) if mae_mean != 0 else 0
 
 cols_targets = st.columns(4)
 cols_targets[0].markdown(render_stat_card("MAE moyen", f"${mae_mean}", "🧨"), unsafe_allow_html=True)
@@ -485,7 +481,7 @@ cols_targets[3].markdown(render_stat_card("Ratio MFE/MAE", mfe_mae_ratio, "🧑�
 st.markdown("---")
 st.header("🎯 Analyse des sorties")
 
-with st.expander("🧠 % du MFE capté par trade", expanded=True):
+with st.expander("🩻 % du MFE capté par trade", expanded=True):
     st.plotly_chart(plot_pct_mfe_captured(df_filtered), use_container_width=True)
     st.caption("""
     Ce graphique indique le pourcentage du mouvement favorable (MFE) capté par chaque trade.
@@ -520,7 +516,7 @@ with st.expander("🧠 % du MFE capté par trade", expanded=True):
     """)
     
 
-with st.expander("🧠 % du MAE encaissé sur profit réalisé", expanded=True):
+with st.expander("🩻 % du MAE encaissé sur profit réalisé", expanded=True):
     st.plotly_chart(plot_pct_mae_vs_etd(df_filtered), use_container_width=True)
     st.caption("""
     Ce graphique mesure combien de drawdown (MAE) tu as encaissé **avant de finir en profit**.
