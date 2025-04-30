@@ -486,16 +486,21 @@ Une pente faible (**< 0.5**) indique que tu laisses souvent **une grosse partie 
 
 with st.expander("🧙 Suis-je bon pour sortir près du max de profit ?"):
     st.plotly_chart(plot_pct_mfe_captured(df_filtered), use_container_width=True)
-    st.caption("""
-    Ce graphique indique le pourcentage du mouvement favorable (MFE) capté par chaque trade.
 
-    Exemples :
-    - 100% = tu as sorti au plus haut du mouvement favorable.
-    - 50% = tu as capté la moitié du potentiel avant de sortir.
-    - 0% = tu es sorti au break-even alors que le trade avait du potentiel.
+    st.markdown("""
+Ce graphique indique le pourcentage du **mouvement favorable (MFE)** capté par chaque trade.
 
-    👉 Objectif : te rapprocher de la droite, en captant une part croissante du mouvement,
-    sans augmenter ton risque. Un bon trader capture efficacement sans rester trop longtemps.
+---
+
+### 📌 Exemples :
+- **100%** = tu es sorti au plus haut du mouvement favorable.
+- **50%** = tu as capté la moitié du potentiel avant de sortir.
+- **0%** = tu es sorti au break-even alors que le trade avait du potentiel.
+
+---
+
+👉 **Objectif** : te rapprocher de la droite, en captant une part croissante du mouvement  
+sans augmenter ton risque. Un bon trader capture efficacement sans rester trop longtemps.
     """)
 
     # Calculs pour le commentaire interactif
@@ -508,29 +513,43 @@ with st.expander("🧙 Suis-je bon pour sortir près du max de profit ?"):
     q3 = mfe_series.quantile(0.75)
 
     st.markdown(f"""
-    💬 **Analyse des sorties :**
+---
 
-    - **Q1 : {q1:.1f}%** → 25% des trades ont capté **moins de {q1:.1f}%** du mouvement favorable. Cela peut indiquer des sorties trop précoces ou un manque de confiance.
-    - **Moyenne : {mean:.1f}%** → En moyenne, tu captures **{mean:.1f}%** du potentiel. C'est ton niveau global d'efficacité de sortie.
-    - **Médiane : {median:.1f}%** → 50% des trades capturent plus de **{median:.1f}%**, l'autre moitié moins. Une médiane supérieure à 70% est déjà **très solide**.
-    - **Q3 : {q3:.1f}%** → 25% des trades les plus efficaces captent plus de **{q3:.1f}%**, ce sont tes meilleures sorties.
+### 💬 Analyse des sorties :
 
-    👉 **Objectif** : faire monter la médiane et la moyenne vers Q3, tout en gardant un bon ratio gain/risque. Une courbe étalée avec un Q1 très bas peut indiquer des trades gâchés malgré du potentiel.
-    """)
+- **Q1 : {q1:.1f}%** → 25% des trades ont capté **moins de {q1:.1f}%** du mouvement favorable.  
+  Cela peut indiquer des sorties trop précoces ou un manque de confiance.
+- **Moyenne : {mean:.1f}%** → En moyenne, tu captures **{mean:.1f}%** du potentiel.  
+  C'est ton niveau global d'efficacité de sortie.
+- **Médiane : {median:.1f}%** → 50% des trades capturent plus de **{median:.1f}%**, l'autre moitié moins.  
+  Une médiane supérieure à **70%** est déjà **très solide**.
+- **Q3 : {q3:.1f}%** → 25% des trades les plus efficaces captent plus de **{q3:.1f}%**,  
+  ce sont tes **meilleures sorties**.
+
+---
+
+👉 **Objectif** : faire monter la médiane et la moyenne vers **Q3**,  
+tout en gardant un bon **ratio gain/risque**.  
+Une courbe étalée avec un Q1 très bas peut indiquer des trades gâchés malgré du potentiel.
+    """, unsafe_allow_html=False)
     
 
 with st.expander("🌶️ Combien de drawdown je supporte avant de gagner ?"):
     st.plotly_chart(plot_pct_mae_vs_etd(df_filtered), use_container_width=True)
-    st.caption("""
-    Ce graphique mesure combien de drawdown (MAE) tu as encaissé **avant de finir en profit**.
 
-    Exemples :
-    - 20% = tu es resté assez proche de ton prix d’entrée avant de sortir gagnant.
-    - 100% = tu as encaissé un drawdown aussi grand que ton profit final.
-    
+    st.markdown("""
+Ce graphique mesure combien de **drawdown (MAE)** tu as encaissé **avant de finir en profit**.
 
-    👉 Objectif : réduire ces valeurs. Plus tu es capable de sortir gagnant sans gros stress,
-    plus ton trading est propre et maîtrisé.
+---
+
+### 📌 Exemples :
+- **20%** = tu es resté assez proche de ton prix d’entrée avant de sortir gagnant.
+- **100%** = tu as encaissé un drawdown aussi grand que ton profit final.
+
+---
+
+👉 **Objectif** : réduire ces valeurs.  
+Plus tu es capable de sortir gagnant sans gros stress, plus ton trading est propre et maîtrisé.
     """)
 
     # Calculs pour analyse interactive du MAE
@@ -543,15 +562,24 @@ with st.expander("🌶️ Combien de drawdown je supporte avant de gagner ?"):
     q3_mae = mae_series.quantile(0.75)
 
     st.markdown(f"""
-    💬 **Analyse du stress (MAE) encaissé avant profit :**
+---
 
-    - **Q1 : {q1_mae:.1f}%** → 25% des trades gagnants ont encaissé **moins de {q1_mae:.1f}%** de drawdown avant de finir en profit. Cela traduit une bonne précision ou un timing propre.
-    - **Moyenne : {mean_mae:.1f}%** → En moyenne, tu encaisses **{mean_mae:.1f}%** de drawdown par rapport à ton gain. Moins c’est élevé, plus ton trade est stable.
-    - **Médiane : {median_mae:.1f}%** → 50% des trades ont encaissé moins de **{median_mae:.1f}%**, c’est ton niveau médian de stress avant gain.
-    - **Q3 : {q3_mae:.1f}%** → 25% des trades gagnants ont encaissé plus de **{q3_mae:.1f}%** de drawdown : c’est ton quart le plus stressant.
+### 💬 Analyse du stress (MAE) encaissé avant profit :
 
-    👉 **Objectif** : faire baisser la moyenne et la médiane pour un trading plus propre et maîtrisé. Une médiane < 50% indique que tu restes souvent proche de ton point d’entrée avant de sortir gagnant, ce qui est excellent.
-    """)
+- **Q1 : {q1_mae:.1f}%** → 25% des trades gagnants ont encaissé **moins de {q1_mae:.1f}%** de drawdown avant de finir en profit.  
+  Cela traduit une bonne précision ou un timing propre.
+- **Moyenne : {mean_mae:.1f}%** → En moyenne, tu encaisses **{mean_mae:.1f}%** de drawdown par rapport à ton gain.  
+  Moins c’est élevé, plus ton trade est **stable**.
+- **Médiane : {median_mae:.1f}%** → 50% des trades ont encaissé moins de **{median_mae:.1f}%**,  
+  c’est ton niveau médian de stress avant gain.
+- **Q3 : {q3_mae:.1f}%** → 25% des trades gagnants ont encaissé plus de **{q3_mae:.1f}%** de drawdown :  
+  c’est ton quart le plus **stressant**.
+
+---
+
+👉 **Objectif** : faire **baisser la moyenne et la médiane** pour un trading plus propre et maîtrisé.  
+Une **médiane < 50%** indique que tu restes souvent proche de ton point d’entrée avant de sortir gagnant, ce qui est **excellent**.
+    """, unsafe_allow_html=False)
 
 # ─────────────────────────────────────────────────────────────────────────
 # Liste des trades filtrés
