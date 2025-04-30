@@ -8,6 +8,7 @@ import calendar
 import datetime as dt
 import yfinance as yf
 import plotly.graph_objects as go
+import numpy as np
 
 import streamlit_authenticator as stauth
 
@@ -475,7 +476,7 @@ with st.expander("🧠 % du MFE capté par trade", expanded=True):
     👉 Objectif : te rapprocher de la droite, en captant une part croissante du mouvement,
     sans augmenter ton risque. Un bon trader capture efficacement sans rester trop longtemps.
     """)
-    
+
     # Calculs pour le commentaire interactif
     mfe_series = (df_filtered["Profit"] / df_filtered["MFE"] * 100).replace([np.inf, -np.inf], np.nan).dropna()
     mfe_series = mfe_series[(mfe_series >= 0) & (mfe_series <= 300)]
