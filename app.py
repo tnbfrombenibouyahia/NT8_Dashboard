@@ -465,16 +465,30 @@ st.header("🎯 Analyse des sorties")
 with st.expander("🧠 % du MFE capté par trade", expanded=True):
     st.plotly_chart(plot_pct_mfe_captured(df_filtered), use_container_width=True)
     st.caption("""
-    Ce graphique montre combien de % du potentiel favorable a été capté par chaque trade.
-    100% = sortie parfaite, 50% = moitié du potentiel capté.
-    Objectif : augmenter ce ratio sans sacrifier le risk management.
+    Ce graphique indique le pourcentage du mouvement favorable (MFE) capté par chaque trade.
+
+    Exemples :
+    - 100% = tu as sorti au plus haut du mouvement favorable.
+    - 50% = tu as capté la moitié du potentiel avant de sortir.
+    - 0% = tu es sorti au break-even alors que le trade avait du potentiel.
+
+    👉 Objectif : te rapprocher de la droite, en captant une part croissante du mouvement,
+    sans augmenter ton risque. Un bon trader capture efficacement sans rester trop longtemps.
     """)
+    
 
 with st.expander("🧠 % du MAE encaissé sur profit réalisé", expanded=True):
     st.plotly_chart(plot_pct_mae_vs_etd(df_filtered), use_container_width=True)
     st.caption("""
-    Cette statistique mesure combien de drawdown a été encaissé avant de sortir gagnant.
-    Moins ce chiffre est élevé, mieux c’est.
+    Ce graphique mesure combien de drawdown (MAE) tu as encaissé **avant de finir en profit**.
+
+    Exemples :
+    - 20% = tu es resté assez proche de ton prix d’entrée avant de sortir gagnant.
+    - 100% = tu as encaissé un drawdown aussi grand que ton profit final.
+    - >100% = tu étais bien dans le rouge avant de finir dans le vert (stress élevé).
+
+    👉 Objectif : réduire ces valeurs. Plus tu es capable de sortir gagnant sans gros stress,
+    plus ton trading est propre et maîtrisé.
     """)
 
 # ─────────────────────────────────────────────────────────────────────────
