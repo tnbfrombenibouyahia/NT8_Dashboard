@@ -425,8 +425,6 @@ def plot_pct_mfe_captured(df):
     df = df.copy()
     df["% MFE Captured"] = (df["Profit"] / df["MFE"] * 100).replace([np.inf, -np.inf], np.nan)
     df = df.dropna(subset=["% MFE Captured"])
-
-    # Clamp values à 300 max
     df = df[(df["% MFE Captured"] >= 0) & (df["% MFE Captured"] <= 300)]
 
     fig = px.histogram(
@@ -438,19 +436,24 @@ def plot_pct_mfe_captured(df):
         hover_data=["Entry time", "Instrument", "Profit", "MFE"]
     )
 
-    # Ajouter une ligne médiane
+    # Statistiques
     median = df["% MFE Captured"].median()
-    fig.add_vline(x=median, line_dash="dash", line_color="white",
-                  annotation_text=f"Médiane : {median:.1f}%", annotation_position="top right")
+    mean = df["% MFE Captured"].mean()
+    q1 = df["% MFE Captured"].quantile(0.25)
+    q3 = df["% MFE Captured"].quantile(0.75)
 
-    # Mise en forme
+    # Lignes verticales
+    fig.add_vline(x=median, line_dash="dash", line_color="white", annotation_text=f"Médiane : {median:.1f}%", annotation_position="top left")
+    fig.add_vline(x=mean, line_dash="dot", line_color="orange", annotation_text=f"Moyenne : {mean:.1f}%", annotation_position="top left")
+    fig.add_vline(x=q1, line_dash="dot", line_color="green", annotation_text=f"Q1 : {q1:.1f}%", annotation_position="top left")
+    fig.add_vline(x=q3, line_dash="dot", line_color="green", annotation_text=f"Q3 : {q3:.1f}%", annotation_position="top right")
+
     fig.update_layout(
         xaxis_title="% du MFE capté",
         yaxis_title="Nombre de trades",
         bargap=0.1,
         template="plotly_dark"
     )
-
     return fig
 
 def plot_pct_mae_vs_etd(df):
@@ -468,8 +471,16 @@ def plot_pct_mae_vs_etd(df):
         hover_data=["Entry time", "Instrument", "MAE", "ETD"]
     )
 
-    fig.add_vline(x=df["% MAE / ETD"].median(), line_dash="dash", line_color="white",
-                  annotation_text="Médiane", annotation_position="top right")
+    # Statistiques
+    median = df["% MAE / ETD"].median()
+    mean = df["% MAE / ETD"].mean()
+    q1 = df["% MAE / ETD"].quantile(0.25)
+    q3 = df["% MAE / ETD"].quantile(0.75)
+
+    fig.add_vline(x=median, line_dash="dash", line_color="white", annotation_text=f"Médiane : {median:.1f}%", annotation_position="top left")
+    fig.add_vline(x=mean, line_dash="dot", line_color="orange", annotation_text=f"Moyenne : {mean:.1f}%", annotation_position="top left")
+    fig.add_vline(x=q1, line_dash="dot", line_color="green", annotation_text=f"Q1 : {q1:.1f}%", annotation_position="top left")
+    fig.add_vline(x=q3, line_dash="dot", line_color="green", annotation_text=f"Q3 : {q3:.1f}%", annotation_position="top right")
 
     fig.update_layout(
         xaxis_title="% du MAE encaissé",
