@@ -297,36 +297,53 @@ def plot_scatter_mfe_vs_profit(df):
 
     df = df.copy()
     df = df.dropna(subset=["MFE", "Profit"])
+
+    # Quartiles
     q1 = df["MFE"].quantile(0.25)
     median = df["MFE"].median()
     q3 = df["MFE"].quantile(0.75)
 
-    # Fit ligne de tendance
-    coef = np.polyfit(df["MFE"], df["Profit"], 1)
-    trend = np.poly1d(coef)
+    # Régression linéaire
+    x = df["MFE"]
+    y = df["Profit"]
+    slope, intercept = np.polyfit(x, y, 1)
 
+    # Droite de tendance
+    x_range = np.linspace(x.min(), x.max(), 100)
+    y_pred = slope * x_range + intercept
+
+    # Création du graphique
     fig = px.scatter(
         df,
         x="MFE",
         y="Profit",
-        title="🔁 MFE vs Profit réalisé",
+        title=f"📈 MFE vs Profit réalisé (pente = {slope:.2f})",
         labels={"MFE": "Max Favorable Excursion", "Profit": "Profit réalisé"},
         hover_data=["Entry time", "Exit time", "Instrument"]
     )
 
-    # Ajouter quartiles
+    # Ajout de la droite de tendance
+    fig.add_trace(go.Scatter(
+        x=x_range,
+        y=y_pred,
+        mode='lines',
+        name="Tendance",
+        line=dict(dash="dot", color="orange")
+    ))
+
+    # Ajout des lignes de quartiles
     fig.add_vline(x=q1, line_dash="dot", line_color="green", annotation_text=f"Q1 : {q1:.1f}$", annotation_position="top left")
     fig.add_vline(x=median, line_dash="dash", line_color="white", annotation_text=f"Médiane : {median:.1f}$", annotation_position="top left")
     fig.add_vline(x=q3, line_dash="dot", line_color="green", annotation_text=f"Q3 : {q3:.1f}$", annotation_position="top right")
 
-    # Ajouter droite de tendance
-    x_vals = np.linspace(df["MFE"].min(), df["MFE"].max(), 100)
-    y_vals = trend(x_vals)
-    fig.add_traces(go.Scatter(x=x_vals, y=y_vals, mode='lines', line=dict(color="orange", dash="dot"), name="Tendance"))
-
-    fig.update_layout(template="plotly_dark")
+    fig.update_layout(
+        xaxis_title="Max Favorable Excursion",
+        yaxis_title="Profit réalisé",
+        template="plotly_dark"
+    )
 
     return fig
+
 
 def plot_heatmap_mae_vs_mfe(df):
     if df.empty:

@@ -445,21 +445,30 @@ st.markdown("## 👨‍🔬 Optimisation des targets")
 
 st.plotly_chart(plot_scatter_mfe_vs_profit(df_filtered), use_container_width=True, key="mfe_profit")
 
+# Statistiques pour commentaire interactif
 mfe_series = df_filtered["MFE"].dropna()
 q1 = mfe_series.quantile(0.25)
-median = mfe_series.quantile(0.5)
+median = mfe_series.median()
 q3 = mfe_series.quantile(0.75)
-mean = mfe_series.mean()
+slope, _ = np.polyfit(df_filtered["MFE"].dropna(), df_filtered["Profit"].dropna(), 1)
 
 st.markdown(f"""
 💬 **Analyse du potentiel (MFE) vs Résultat :**
 
-- **Q1 : {q1:.1f}$** → 25% des trades avaient un potentiel **inférieur à {q1:.1f}$**.
-- **Moyenne : {mean:.1f}$** → En moyenne, tes trades présentent un potentiel de **{mean:.1f}$**.
-- **Médiane : {median:.1f}$** → 50% des trades avaient un potentiel supérieur à **{median:.1f}$**.
-- **Q3 : {q3:.1f}$** → 25% des trades avaient un MFE supérieur à **{q3:.1f}$**, ce sont tes meilleures opportunités.
+Ce graphique montre comment le **potentiel maximal d’un trade (MFE)** est relié à ton **profit final**.
 
-👉 **Objectif** : exploiter davantage les trades à fort potentiel. Une droite de tendance positive est un bon signe, mais une pente faible peut révéler que ce potentiel n’est pas capté efficacement.
+**Exemples :**
+- Si un trade a un MFE de 100$ mais termine à 20$, tu n’as capté que 20% du potentiel.
+- Si un trade a un MFE de 50$ et finit à 50$, tu l’as parfaitement exploité.
+
+**Statistiques :**
+- **Q1 : {q1:.1f}$** → 25% des trades avaient un potentiel **inférieur à {q1:.1f}$**, ce sont les plus petits mouvements.
+- **Médiane : {median:.1f}$** → 50% des trades avaient un MFE supérieur à **{median:.1f}$**.
+- **Q3 : {q3:.1f}$** → 25% des trades avaient un MFE supérieur à **{q3:.1f}$**, ce sont tes meilleures opportunités.
+- **Pente de la tendance : {slope:.2f}** → Cela signifie qu’en moyenne, chaque **1$ de potentiel (MFE)** se traduit par **{slope:.2f}$ de profit**.
+
+👉 **Objectif** : avoir une pente de tendance élevée (proche de 1), ce qui indique que tu transformes efficacement ton potentiel en résultat.  
+Une pente faible signifie que tu laisses beaucoup d’argent "sur la table", malgré de belles opportunités.
 """)
 
 mae_mean = round(df_filtered["MAE"].mean(), 2) if "MAE" in df_filtered else 0
