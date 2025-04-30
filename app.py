@@ -476,7 +476,7 @@ with st.expander("🎯 ANALYSE : Exploitation du potentiel (MFE vs Profit) │ S
     """)
 
 
-with st.expander("🏄‍♂️ ANALYSE : Efficacité des sorties (Pourcentage du  MFE capté) │ Suis-je bon pour sortir près du max de profit ?"):
+with st.expander("🧙 ANALYSE : Efficacité des sorties (Pourcentage du  MFE capté) │ Suis-je bon pour sortir près du max de profit ?"):
     st.plotly_chart(plot_pct_mfe_captured(df_filtered), use_container_width=True)
     st.caption("""
     Ce graphique indique le pourcentage du mouvement favorable (MFE) capté par chaque trade.
