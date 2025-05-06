@@ -462,10 +462,9 @@ with st.expander("🎯 Suis-je capable de transformer le potentiel ?"):
     st.markdown(f"""
 Ce graphique te montre si **tu arrives à convertir le potentiel de tes trades en profit réel**.  
 Autrement dit : est-ce que tu arrives à **prendre ce que le marché t’offre** ou est-ce que tu en laisses sur la table ?
+    """)
 
----
-
-st.markdown(f"""
+    st.markdown(f"""
 <div style="line-height: 1.6; font-size: 1.05rem;">
 <h4>📊 Statistiques issues de <b>TES trades</b> :</h4>
 <ul style="margin-left: -20px;">
@@ -480,7 +479,9 @@ st.markdown(f"""
     </li>
 </ul>
 </div>
-""", unsafe_allow_html=True)
+    """, unsafe_allow_html=True)
+
+    st.markdown(f"""
 ---
 
 ### 📈 Et la pente alors ?
@@ -503,7 +504,7 @@ Si tu as une pente basse, c’est que tu :
 - Ou que **ton stop est trop serré**.
 
 ⚙️ Tu peux alors bosser sur ta gestion des sorties pour **laisser vivre les bons trades** plus longtemps.
-    """, unsafe_allow_html=False)
+    """)
 
 with st.expander("🧙 Suis-je bon pour sortir près du max de profit ?"):
     st.plotly_chart(plot_pct_mfe_captured(df_filtered), use_container_width=True)
