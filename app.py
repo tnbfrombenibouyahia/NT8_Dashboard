@@ -465,13 +465,22 @@ Autrement dit : est-ce que tu arrives à **prendre ce que le marché t’offre**
 
 ---
 
-### 📊 Statistiques issues de TES trades :
-- **Q1 : {q1:.1f}$** → 25% de tes trades n’ont même pas eu un MFE de {q1:.1f}$.  
-  Ce sont de **petits mouvements**, pas très exploitables.
-- **Médiane : {median:.1f}$** → La moitié de tes trades avaient un potentiel supérieur à {median:.1f}$.  
-  Si cette valeur est basse, tu ne laisses pas trop courir.
-- **Q3 : {q3:.1f}$** → Tes meilleures opportunités. 25% de tes trades pouvaient atteindre plus de {q3:.1f}$.
-
+st.markdown(f"""
+<div style="line-height: 1.6; font-size: 1.05rem;">
+<h4>📊 Statistiques issues de <b>TES trades</b> :</h4>
+<ul style="margin-left: -20px;">
+    <li><b>Q1 : {q1:.1f}$</b> → 25%<br>
+        Ce sont de <b>petits mouvements</b>, pas très exploitables.
+    </li>
+    <li><b>Médiane : {median:.1f}$</b> → 50%<br>
+        La moitié de tes trades avaient un potentiel supérieur à <b>{median:.1f}$</b>. Si cette valeur est basse, tu ne laisses pas trop courir.
+    </li>
+    <li><b>Q3 : {q3:.1f}$</b> → 25%<br>
+        Ce sont <b>tes meilleures opportunités</b>.
+    </li>
+</ul>
+</div>
+""", unsafe_allow_html=True)
 ---
 
 ### 📈 Et la pente alors ?
